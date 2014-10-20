@@ -1,0 +1,44 @@
+
+
+* Estimateur de longueur par intégration
+
+ 2D -> contour -> estim. tang -> intégration
+ multigrille, comparaison MLP/DSS 
+
+
+* Moments géométriques
+  
+  2D, ellipse multigrille, convergence, formules sur les ellipses
+  param. echelle
+  vitesse convergence
+  
+
+* DT / estim differentiels
+
+
+  forme 2D, 2x DT, difference finie dans voisinnage et extrait K ou normales  
+  comparaisons
+
+* Reco cercles par Seidel
+
+  forme ->  contour, pts intérieurs , pts exterieurs, test "orientation"
+  offline/online
+
+
+* Cours
+
+  - installation (sans trucs optionnels)
+  - (cmake..) compilation exemple hors-projet
+  - forme analytique -> Gauss (h) -> contour (GridCurve + iterateurs )
+  - brancher un estimateur (longueur, tangentes)
+  - Board pour export
+  - Interface DT (+export/writers colormap)
+
+
+
+
+
+
+
+
+ 
