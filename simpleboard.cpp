@@ -15,7 +15,7 @@ using namespace DGtal::Z2i; //We'll only consider Z² digital space on
 
 int main()
 {
-  trace.beginBlock ( "Board example" );
+  trace.beginBlock ( "Board examples" );
 
   Point p1( -3, -2 );
   Point p2( 7, 3 );
@@ -31,7 +31,6 @@ int main()
   //We display points
   board << p1 << p2 << p3;
 
-
   //Output
   board.saveSVG("test.svg");
   board.saveEPS("test.eps");
@@ -40,7 +39,7 @@ int main()
   //Clear
   board.clear();
   
-  //Upade position + color
+  //Update position + color
   p2[0] = 5; //x-coordinate
   board << domain << p1 << p3;
   
@@ -49,16 +48,9 @@ int main()
   //All points will be in red
   board  << CustomStyle( p2.className(), new CustomColors( red, red ) )
 	 << p2;
-  
   //Export again
   board.saveEPS("test2.eps");
-
-
-
-  //Output
-  board.saveSVG("test.svg");
-  board.saveEPS("test.eps");
-  board.saveTikZ("test.tikz");
+ 
 
   
   ////// Colormap example
@@ -87,7 +79,6 @@ int main()
   
   //Export again
   board.saveEPS("test-colormap.eps");
-
 
   trace.endBlock();
   return 0;
