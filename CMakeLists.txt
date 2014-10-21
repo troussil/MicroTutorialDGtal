@@ -9,7 +9,8 @@ INCLUDE_DIRECTORIES(${DGTAL_INCLUDE_DIRS})
 LINK_DIRECTORIES(${DGTAL_LIBRARY_DIRS})
 
 SET(SRCs helloworld
-         simpleboard)
+  simpleboard
+  testSet)
 
 FOREACH(FILE ${SRCs})
   add_executable(${FILE} ${FILE})
