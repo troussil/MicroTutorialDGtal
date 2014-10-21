@@ -8,7 +8,8 @@ FIND_PACKAGE(DGtal REQUIRED)
 INCLUDE_DIRECTORIES(${DGTAL_INCLUDE_DIRS})
 LINK_DIRECTORIES(${DGTAL_LIBRARY_DIRS})
 
-SET(SRCs helloworld)
+SET(SRCs helloworld
+         simpleboard)
 
 FOREACH(FILE ${SRCs})
   add_executable(${FILE} ${FILE})
