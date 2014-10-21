@@ -12,7 +12,8 @@ SET(SRCs
   helloworld
   simpleboard
   testSet
-  estimationOnContours)
+  estimationOnContours
+  DTFromShape)
 
 FOREACH(FILE ${SRCs})
   add_executable(${FILE} ${FILE})
