@@ -57,7 +57,7 @@ int main(int argc, char** argv)
   board << domain;
   trace.info()<< "Domain = "<< domain<<std::endl;
   
-  //for each arrow, draw the corresponding straight segment
+  //for each point, we draw it if it belongs to the digitization
   for(Domain::ConstIterator it = domain.begin() ; it != domain.end();
        ++it)
     {
@@ -75,7 +75,7 @@ int main(int argc, char** argv)
 
   //Euclidean Metric distance transformation computed on the domain
   //'domain'
-  //DT labels all points in the domain  with the distacne to the closest
+  //DT labels all points in the domain  with the distance to the closest
   // point not belonging to 'dig'
   typedef DistanceTransformation<Z2i::Space, Gauss, Z2i::L2Metric> DT;
 
@@ -86,7 +86,7 @@ int main(int argc, char** argv)
   double minval = 0.0;
   for(DT::Domain::ConstIterator it = dt.domain().begin() ; it != dt.domain().end(); ++it)
     {
-      // (*it) is a pointn dt(*it) is the DT value at (*it)
+      // (*it) is a point, dt(*it) is the DT value at (*it)
       if ( dt(*it)>maxval )  maxval = dt(*it);
     }
   trace.info() << "Max DT value= "<<maxval<<std::endl;
