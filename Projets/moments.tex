@@ -1,0 +1,208 @@
+\documentclass[a4paper, 11pt]{article}
+
+\voffset -0cm
+\hoffset 0.0cm
+\textheight 23cm
+\textwidth 16cm
+\topmargin 0.0cm
+\oddsidemargin 0.0cm
+\evensidemargin 0.0cm
+
+\usepackage{epsfig}  
+\usepackage{setspace}
+\usepackage{fancyheadings}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{url}
+
+\title{}
+\author{}
+\date{}
+
+\newtheorem{qu}{Question}
+
+\begin{document}
+
+\begin{center}
+	\LARGE \textbf{Project: ``Multigrid Convergence of Geometrical moments''}
+\end{center}
+
+\section*{Introduction}
+
+The objective of this project is to implement and evaluate geometrical
+moments computation on digital data.
+
+
+We expect from you:
+\begin{itemize}
+\item A short report with answers to the "formal" questions and
+  description of the your implementations choices.
+\item A C++ project (\texttt{CMakeLists.txt} plus several
+  \textbf{commented} cpp program files).
+\end{itemize}
+
+
+\section{Properties of moments}
+We are interest in the analysis of geometrical moment of order
+$m_{p,q}$ defined as follows for $X\subset\mathbb{R}^2$:
+\begin{displaymath}
+ m_{p,q}(X) = \int\int_X x^py^q\,dxdy
+\end{displaymath}
+
+On a digital object $Z\in\mathbb{Z}^2$, we will use the following approximation:
+\begin{displaymath}
+\hat{m}_{p,q}(Z) = \sum_{(i,j)\in Z} i^pj^q
+\end{displaymath} 
+
+Similarly, we will also consider {\bf central geometrical moments} defined by:
+
+\begin{displaymath}
+ \mu_{p,q}(X) = \int\int_X (x-\mu_x)^p(y-\mu_y)^q\,dxdy
+\end{displaymath}
+\begin{displaymath}
+ \hat{\mu}_{p,q}(Z) =  \sum_{(i,j)\in Z} (i-\mu_i)^p(p-\mu_j)^q
+\end{displaymath}
+where $(\mu_x,\mu_y)$ (resp. $(\mu_i,\mu_j)$) is the centroid of X (resp. Z).
+
+\begin{qu}
+ Express $(\mu_x,\mu_y)$ coordinates as function of $m_{a,b}$ for some $a,b\in\mathbb{Z}$
+\end{qu}
+
+\begin{qu}
+ Express first $\mu_{p,q}$ central moments ($p+q\leq 2$) as functions of $m_{p,q}$.
+\end{qu}
+
+
+\begin{qu}
+	Geometrical moments are not scale-invariant. We consider a
+        scaling $X$ by a factor $k$ (denoted $k\cdot X$), express
+        $m_{p,q}(k\cdot X)$ as a function of $m_{p,q}(X)$
+\end{qu}
+
+\noindent Similarly, you also have $\mu_{p,q}(k\cdot X)$ as a function
+of $\mu_{p,q}(X)$.  We can use the previous result to design moments
+$\eta_{p,q}$ with scale invariant properties.
+
+\begin{qu}
+\begin{itemize}
+\item Express $m_{0,0}(k\cdot X)$ from $m_{0,0}(X)$.
+\item Find the $\alpha$ such that 
+\begin{displaymath}
+\frac{m_{p,q}(k\cdot X)}{m_{0,0}(k\cdot X)^\alpha} = \frac{m_{p,q}(X)}{m_{0,0}(X)^\alpha}
+\end{displaymath}
+\item Define $\eta_{p,q}$ as a function of $\mu_{p,q}$ and $\mu_{0,0}$. Conclude on the fact that $\eta_{p,q}$ are translation and scale invariant.
+\end{itemize}
+\end{qu}
+
+
+\section{Multigrid Analysis}
+
+Here, we evaluate the multigrid convergence of $\hat{m}_{pq}$
+estimators. First, remember that we consider here Gauss digitization
+at gridstep $h$ of $X\subset \mathbb{R}^2$:
+\begin{displaymath}
+  Z = Dig(X,h) = \left(\frac{1}{h}\cdot X\right)\cap \mathbb{Z}^2 = X\cap (h\cdot \mathbb{Z}^2)
+\end{displaymath}
+
+
+
+
+As discussed above, we denote
+\begin{displaymath}
+\hat{m}_{pq}(Z) = \sum_{(i,j)\in Z} i^pj^q
+\end{displaymath}
+and define 
+\begin{displaymath}
+\hat{m}_{pq}(Z,h) = \hat{m}_{pq}(h\cdot Z)
+\end{displaymath}
+
+
+
+
+\begin{qu}
+From the definition and using the result of Question 4, express
+$\hat{m}_{pq}(Z,h)$ as a function of $\hat{m}_{pq}(Z)$ and $h$.
+\end{qu}
+
+\begin{qu}
+Implement in \textsc{DGtal} geometrical moments  $\hat{m}_{pq}(Z,h)$
+computations in 2D. In this multigrid context, please consider the
+digitization of a parametric shape (\emph{e.g.} an ellipse).
+\end{qu}
+
+
+
+\begin{qu}
+	Perform a multigrid analysis of $\hat{m}_{pq}(Dig(X,h), h)$
+	 \begin{itemize}
+	 \item Implement function which constructs the digitization of
+           an Euclidean ellipse $E: \frac{x^2}{a^2} + \frac{y^2}{b^2}
+           = 1$ at grid step $h$ 
+	 \item For the first moments ($p+q\leq 3$), output $|
+           \hat{m}_{pq}(Dig(X,h), h) - m_{pq}(E)|$ values for $h$
+           tending to 0.
+	 \item Plot error graphs $h\times Error$ in logscale using \texttt{gnuplot}
+\end{itemize}	 
+\end{qu}	
+
+See Appendix A for first geometrical moments of the ellipse.
+
+
+\begin{qu} 
+We guess that $\hat{m}_{pq}$ has an error in $O(h^{\alpha_{pq}})$ for
+some $\alpha_{pq}\in\mathbb{R}$ depending only on $p$ and
+$q$. Experimentally, can you estimate such $\alpha_{pq}$ for first
+moments ? (Hint: the slope $\beta$ of linear fitting in logscale gives
+you the exponent of something on $x^\beta$). Can you guess the general
+form for the error of $m_{pq}$.
+\end{qu}	
+
+So far, we saw in the lectures that $\hat{m}_{00}$ is convergent with
+speed at least $O(h)$ ([Gauss] with general convex hypothesis on
+$X$). Hence, we have $\alpha_{00} = 1$. Adding hypothesis on $\partial
+X$ (e.g. being $C^3$), we have $\alpha_{00} = \frac{15}{11}-\epsilon$
+[Huxley]
+
+
+\section{Extensions}
+
+\begin{qu}
+  In dimension 3, are the convergence speeds different ?
+\end{qu}
+
+
+\begin{qu}
+  Are moments $m_{pq}$ or $\hat{m}_{pq}$ rotational invariant ? Can
+  you construct rotational invariant shape descriptor from $m_{pq}$ or
+  $\hat{m}_{pq}$ ?
+\end{qu}
+
+
+
+\appendix
+\section{Geometrical moments of a General Ellipse}
+
+Notations:
+\begin{itemize}
+\item $a$ length of the semi-major axis
+\item $b$ length of the semi-minor axis
+\item $x_0$, $y_0$ coordinate of the center of the ellipse
+\item $\lambda$ angle of the major axis with the $x-$axis
+\end{itemize}
+
+
+\begin{align}
+m_{00} &= \pi ab\\
+m_{10} &= \pi ab x_0\\
+m_{01} &= \pi ab y_0\\
+m_{20} &= \pi ab\left( \frac{a^2\cos^2\lambda + b^2\sin^2\lambda}{4} + x_0^2\right)\\
+m_{02} &= \pi ab\left( \frac{a^2\sin^2\lambda + b^2\cos^2\lambda}{4} + y_0^2\right)\\
+m_{11} &= \pi ab\left( \frac{(a^2-b^2)\cos\lambda\sin\lambda}{4} + x_0y_0\right)\\
+m_{30} &= \pi ab\left( \frac{3x_0(a^2\cos^2\lambda + b^2\sin^2\lambda)}{4} + x_0^3\right)\\
+m_{03} &= \pi ab\left( \frac{3y_0(a^2\sin^2\lambda + b^2\cos^2\lambda)}{4} + y_0^3\right)\\
+m_{21} &= \pi ab\left( \frac{y_0(a^2\cos^2\lambda + b^2\sin^2\lambda)}{4} +  \frac{x_0(a^2-b^2)\sin\lambda\cos{\lambda}}{2} + x_0^2y_0\right)\\
+m_{12} &= \pi ab\left( \frac{x_0(a^2\sin^2\lambda + b^2\cos^2\lambda)}{4} +  \frac{y_0(a^2-b^2)\sin\lambda\cos\lambda}{2} + x_0y_0^2\right)
+\end{align}
+
+\end{document}
