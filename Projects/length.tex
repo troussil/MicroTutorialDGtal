@@ -1,0 +1,126 @@
+\documentclass[a4paper, 11pt]{article}
+
+\voffset -0cm
+\hoffset 0.0cm
+\textheight 23cm
+\textwidth 16cm
+\topmargin 0.0cm
+\oddsidemargin 0.0cm
+\evensidemargin 0.0cm
+
+\usepackage{epsfig}  
+\usepackage{setspace}
+\usepackage{fancyheadings}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{url}
+
+\title{}
+\author{}
+\date{}
+
+\newtheorem{qu}{Question}
+
+\begin{document}
+
+\begin{center}
+	\LARGE \textbf{Project: ``Length estimation''}
+\end{center}
+
+\section*{Introduction}
+
+The objective of this project is to implement and evaluate a length estimator
+based on an integration process.
+
+
+We expect from you:
+\begin{itemize}
+\item A short report with answers to the ``formal'' questions and a
+  description of your implementation choices and results.
+\item A C++ project (\texttt{CMakeLists.txt} plus several
+  \textbf{commented} cpp program files).
+\end{itemize}
+
+
+\section{Length estimator}
+
+Let $X \subset \mathbb{R}^2$ be a convex shape and $\partial X$ be its boundary. 
+In order to estimate the perimeter of $X$, we will focus on a discrete version of 
+\begin{equation}
+\label{eq:length}
+\mathcal{L}(X) = \int_{\partial X} \vec{t}(s) \cdot ds.
+\end{equation}
+
+Let us consider the Gauss digitization $Z \subset \mathbb{Z}^2$ of $X$ at gridstep $h$:
+\begin{displaymath}
+  Z = Dig(X,h) = X\cap (h\cdot \mathbb{Z}^2).
+\end{displaymath}
+
+The contour of $Z$, which is merely denoted by $\partial Z$, is a sequence of 1-cells.  
+%Let us consider the whole set of maximal 
+%digital straight segments. 
+%We define the unit tangent vector \hat{t} associated 
+%to a 0-cell $z$ as the normalized direction vector of the maximal digital straight segment that is the 
+%most centered on $z$. 
+We define the unit tangent vector $\hat{\vec{t}}$ associated to a 1-cell as the mean
+vector of the normalized direction vector of the most centered maximal digital straight segments
+computed at its two end points. We also define an elementary tangent vector $\vec{t}_{e}$
+associated to a 1-cell as the unit vector colinear with this 1-cell. 
+
+Hence, the discrete version of (\ref{eq:length}) is:
+\begin{equation}
+\label{eq:length-estimator}
+\hat{\mathcal{L}(X)} = h \cdot \Big( \sum_{c \in \partial Dig(X,h)}  \hat{\vec{t}}(c) . \vec{t}_{e}(c) \Big). 
+\end{equation}
+
+\begin{qu}
+ Let us consider a period of a digital straight line of slope $a/b$. 
+Give the estimation of the length of such period according to (\ref{eq:length-estimator}). 
+\end{qu}
+
+\begin{qu}
+Implement the estimator (\ref{eq:length-estimator}). You can use \textsc{DGtal} and 
+more precisely the classes {\tt GridCurve}, {\tt ArithmeticalDSSComputer} and 
+{\tt SaturatedSegmentation} in order to compute the whole set of maximal digital straight 
+segments. You may found several test or example files where such a computation is done. 
+\end{qu}
+
+\section{Multigrid Analysis}
+
+
+\begin{qu}
+  Perform a multigrid analysis of $\hat{\mathcal{L}(X)}$. 
+  \begin{itemize}
+  \item Implement a function that constructs the digitization of a disk 
+$D: \sqrt{x^2 + y^2} = 1$ at a gridstep $h$.  
+  \item Output $| \hat{\mathcal{L}(X)} - 2\pi |$ values for $h$ tending to 0.
+  \item Plot error graphs $h \times Error$ in logscale using e.g. \texttt{gnuplot}.
+  \end{itemize}	 
+\end{qu}	
+
+\begin{qu} 
+We guess that $\hat{\mathcal{L}(X)}$ has an error in $O(h^{\alpha})$, $\alpha \in \mathbb{R}$. 
+\begin{itemize}
+\item Recall the theoritical bounds we can prove on $\alpha$. 
+\item Experimentally, can you estimate such $\alpha$ for disks? (Hint: the slope $\beta$ of 
+linear fitting in logscale gives you the exponent of something on $x^\beta$). 
+\end{itemize}
+\end{qu}	
+
+\section{Extra works}
+
+\begin{qu}
+Do you get similar values for $\alpha$ when working with other shapes than disks, like ellipses, squares, and so on ?
+\end{qu}
+
+\begin{qu}
+  Perform a complete multigrid convergence evaluation with comparison
+  to both expected quantities (available in \textsc{DGtal} for
+  implicit shapes, see the documentation) and estimated ones from other
+  estimators (e.g. estimators based on a greedy DSS segmentation, see the 
+ documentation).
+\end{qu}
+
+
+\end{document}
