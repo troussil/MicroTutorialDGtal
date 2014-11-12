@@ -74,7 +74,7 @@ the converse is not true.
 %question separation et determinant
 \begin{qu}
 There exists a unique circle passing by three digital points. Show that we can test whether another digital
-point lie inside, on or outside such a circle with integer-only computations and without explicitely computing 
+point lies inside, on or outside such a circle with integer-only computations and without explicitely computing 
 its center and radius. You may have a look at ``in-circle test'', broadly used in computational geometry, e.g. 
 to compute the Delaunay triangulation of a point set.  
 \end{qu}
@@ -177,7 +177,7 @@ Implement algorithms \ref{algo:main} and \ref{algo:rec}.
   \tcp{points of $S$ are numbered from $0$ to $|S|-1$, $|S|$ is the size of the set}
   Initialize $p_1, p_2, p_3$ with three points of $S$ \tcp*{we assume here that $|S| > 3$}
   \tcp{recursive step}
-  areCircularlySeparable($S^-$, $S^+$, $S$, $p_1$, $p_2$, $p_3$, $3$) \; 
+  \Return areCircularlySeparable($S^-$, $S^+$, $S$, $p_1$, $p_2$, $p_3$, $3$) \; 
   %
   \caption{areCircularlySeparable($S^-$, $S^+$, $p_1$, $p_2$, $p_3$)}
   \label{algo:main}
