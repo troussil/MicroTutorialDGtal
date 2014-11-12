@@ -202,11 +202,12 @@ Implement algorithms \ref{algo:main} and \ref{algo:rec}.
         or ($s_i \in S^+$ and $s_i$ is inside the circle passing by $p_1, p_2, p_3$) }{
         %
         $p_n \leftarrow s_i$ \; 
-        areSeparable $\leftarrow$ areCircularlySeparable($S^-$, $S^+$, $S$, $p_1$, $p_2$, $p_3$, $n+1$) \; 
+        areSeparable $\leftarrow$ areCircularlySeparable($S^-$, $S^+$, $S$, $p_1$, $p_2$, $p_3$, $n-1$) \; 
         %
       }
-      \Return areSeparable \; 
+      $i \leftarrow i + 1$ \; 
     }    
+    \Return areSeparable \; 
   }
   %
   \Else{
