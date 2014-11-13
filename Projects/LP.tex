@@ -176,7 +176,7 @@ $S^-$ from $S^+$ or not (lines 11-17 of algorithm \ref{algo:rec}).
   \tcp{initialisation step}
   Construct the set of $S = S^- \cup S^+$ \; 
   Randomly permute the points of $S$ \;
-  \tcp{points of $S$ are numbered from $0$ to $|S|-1$, $|S|$ is the size of the set}
+  \tcp{points of $S$ are numbered from $1$ to $|S|$, $|S|$ is the size of the set}
   Initialize $p_1, p_2, p_3$ with three points of $S$ \tcp*{we assume here that $|S| > 3$}
   \tcp{recursive step}
   \Return areCircularlySeparable($S^-$, $S^+$, $S$, $|S|$, $p_1$, $p_2$, $p_3$, $k$) \; 
