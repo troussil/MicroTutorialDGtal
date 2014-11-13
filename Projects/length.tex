@@ -71,7 +71,7 @@ associated to a 1-cell as the unit vector colinear with this 1-cell.
 Hence, the discrete version of (\ref{eq:length}) is:
 \begin{equation}
 \label{eq:length-estimator}
-\hat{\mathcal{L}(X)} = h \cdot \Big( \sum_{c \in \partial Dig(X,h)}  \hat{\vec{t}}(c) . \vec{t}_{e}(c) \Big). 
+\hat{\mathcal{L}}(X) = h \cdot \Big( \sum_{c \in \partial Dig(X,h)}  \hat{\vec{t}}(c) . \vec{t}_{e}(c) \Big). 
 \end{equation}
 
 \begin{qu}
@@ -90,21 +90,21 @@ segments. You may found several test or example files where such a computation i
 
 
 \begin{qu}
-  Perform a multigrid analysis of $\hat{\mathcal{L}(X)}$. 
+  Perform a multigrid analysis of $\hat{\mathcal{L}}(X)$. 
   \begin{itemize}
   \item Implement a function that constructs the digitization of a disk 
 $D: \sqrt{x^2 + y^2} = 1$ at a gridstep $h$.  
-  \item Output $| \hat{\mathcal{L}(X)} - 2\pi |$ values for $h$ tending to 0.
+  \item Output $| \hat{\mathcal{L}}(X) - 2\pi |$ values for $h$ tending to 0.
   \item Plot error graphs $h \times Error$ in logscale using e.g. \texttt{gnuplot}.
   \end{itemize}	 
 \end{qu}	
 
 \begin{qu} 
-We guess that $\hat{\mathcal{L}(X)}$ has an error in $O(h^{\alpha})$, $\alpha \in \mathbb{R}$. 
+We guess that $\hat{\mathcal{L}}(X)$ has an error in $O(h^{\alpha})$, $\alpha \in \mathbb{R}$. 
 \begin{itemize}
-\item Recall the theoritical bounds we can prove on $\alpha$. 
 \item Experimentally, can you estimate such $\alpha$ for disks? (Hint: the slope $\beta$ of 
 linear fitting in logscale gives you the exponent of something on $x^\beta$). 
+\item Compare to the theoritical upper bound of the error. 
 \end{itemize}
 \end{qu}	
 
@@ -120,6 +120,10 @@ Do you get similar values for $\alpha$ when working with other shapes than disks
   implicit shapes, see the documentation) and estimated ones from other
   estimators (e.g. estimators based on a greedy DSS segmentation, see the 
  documentation).
+\end{qu}
+
+\begin{qu}
+Can you adapt a similar approach for the estimation of the surface area in 3D?
 \end{qu}
 
 
