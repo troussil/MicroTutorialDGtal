@@ -45,7 +45,7 @@ We expect from you:
 \section{Project Description}
 
 
-The idea is to model the a digital surface as the zero-crossing of a
+The idea is to model  a digital surface as the zero-crossing of an
 implicit function and to estimate differential quantities from this
 implicit parametrization.
 
@@ -56,30 +56,40 @@ implicit parametrization.
 
 
 \begin{qu}
-  Implement a function that digitizes an implicit shape (see
-  MicroTutorial) on a digital grid with  step $h$.
+  Implement a function that digitizes a mathematical shape (see for
+  instance the parameteric shapes described in the MicroTutorial
+  project) on a digital grid with step $h$. Extract the contour of the
+  digital shape (denoted $\partial X$ in the following). 
 \end{qu}
 
 \begin{qu}
   Using a distance transformation on the shape and its complement,
-  construct an implicit parametrization of the shape.
+  construct an implicit function $f(x,y)$ such that:
+  \begin{itemize}
+  \item $f(x,y)=0$ if $(x,y)\in \partial X$;
+  \item $f(x,y)<0$ (resp. $f(x,y)>0$) if $(x,y)\in X$ (resp. $(x,y)\in
+    \bar{X}$) and $f(x,y)$ is the distance between $(x,y)$ and $\partial X$.
+  \end{itemize}
 \end{qu}
-
+Such function is called a \emph{signed distance transformation} of
+$\partial X$.
 
 \begin{qu}
-  From this parametrization, implement  differential estimators such
-  as normal vector field and curvature on surface point.
+  From this parametrization, implement differential estimators such as
+  normal vector field and curvature on boundary points. For example,
+  you could consider finite difference analysis of the implicit
+  function. As you would see, the estimated quantities could become
+  noisy if computations are performed too close to $\partial X$. Propose
+  and evaluate a method to smooth the computations (\emph{e.g.} for
+  instance using Gaussian convolution with a given parameter $\sigma$
+  or using the Voronoi diagram --see \texttt{DGtal::VoronoiMap}-- to
+  propagate quantities inside the object).
 \end{qu}
+
 
 
 \section{Multigrid Analysis}
 
-\begin{qu}
-  From this parametrization, implement  differential estimators such
-  as normal vector field and curvature on boundary points. For
-  example, you could consider finite difference analysis of the
-  implicit function.
-\end{qu}
 
 
 \begin{qu}
