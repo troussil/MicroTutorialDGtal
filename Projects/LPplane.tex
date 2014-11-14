@@ -1,0 +1,239 @@
+\documentclass[a4paper, 11pt]{article}
+
+\voffset -0cm
+\hoffset 0.0cm
+\textheight 23cm
+\textwidth 16cm
+\topmargin 0.0cm
+\oddsidemargin 0.0cm
+\evensidemargin 0.0cm
+
+\usepackage{epsfig}  
+\usepackage{setspace}
+\usepackage{fancyheadings}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{url}
+
+%algo
+\usepackage[english, linesnumbered, ruled, vlined]{algorithm2e}
+
+\title{}
+\author{}
+\date{}
+
+\newtheorem{qu}{Question}
+
+\begin{document}
+
+\begin{center}
+	\LARGE \textbf{Project: ``Recognition of digital plane''}
+\end{center}
+
+\section*{Introduction}
+
+The objective of this project is to implement an linear programming based algorithm
+for the recognition of digital planes. 
+
+We expect from you:
+\begin{itemize}
+\item A short report with answers to the ``formal'' questions and a
+  description of your implementation choices and results.
+\item A C++ project (\texttt{CMakeLists.txt} plus several
+  \textbf{commented} cpp program files).
+\end{itemize}
+
+
+\section{Digital plane}
+
+In the sequel, let us consider the following definition: 
+a digital set $Z$ is a \emph{digital plane} if and only if 
+there exists a normal vector $N(a,b,c) \in \mathbb{Z}^3$ and 
+a bound $\mu \in \mathbb{Z}$ such that:
+\begin{equation}
+\label{eq:arith-def}
+    \forall z \in Z, \: \mu \leq N \cdot z \leq \mu + \max{(|a|,|b|,|c|)}
+\end{equation}
+(where $\cdot$ denote the scalar product). 
+
+\begin{qu}
+We assume now that $0 \leq a \leq b < c$. 
+Show that \ref{eq:arith-def}) is equivalent to: 
+\begin{equation}
+\forall z \in Z, \:
+  \left\{
+  \begin{array}{l}
+     N \cdot z \leq \mu  \\
+     N \cdot (z+(0,0,1)) \geq \mu  \\
+  \end{array}
+  \right.
+\end{equation}
+\end{qu}
+
+
+%question separation et determinant
+\begin{qu}
+There exists a unique (Euclidean) plane passing by three digital points. Show that we can test whether another digital
+point lies BELOW, ON or ABOVE such a plan with integer-only computations and without explicitly computing 
+its center and radius. You may have a look at ``orientation test'' or ``which-side test'', broadly used in computational geometry. 
+\end{qu}
+
+\begin{qu}
+Implement a function that checks whether two given digital sets are separated by a given plane passing by three
+digital points or not.  
+\end{qu}
+
+Let us now consider algorithm \ref{algo:main} (which uses routine \ref{algo:rec}). 
+It is a randomized and recursive algorithm that checks whether two point sets
+ are separable by a plane in expected linear-time. 
+%refs
+
+The union of the bottom point set, denoted by $S^-$, and the top point set, denoted by $S^+$, is 
+merely denoted by $S$. All the points of $S$ are numbered from $1$ to $|S|$, the size of $S$.    
+The idea consists in maintaining a separating plane while iterating over the points $s_i \in S$ from $1$ to $|S|$. 
+For each point $s_i$, three cases may occur:  
+\begin{itemize}
+ \item if it belongs to $S^-$ (resp. $S^+$) and it is located BELOW (resp. ABOVE) or ON 
+the current separating plane, there is nothing to do. 
+ \item Otherwise (lines 6-9 of algorithm \ref{algo:rec}): 
+ \begin{enumerate}
+   \item Either the two input sets are not separable by a plane at all,  
+   \item or there exists a separating plane passing by $s_i$. 
+ \end{enumerate}
+\end{itemize}
+In the aim of deciding between these last two alternatives, the set of possible separating 
+planes is restricted to planes passing by $s_i$ and the same algorithm is recursively called
+from $1$ to $i$ (line 9 of algorithm \ref{algo:rec}). 
+At each recursive call, the set of possible separating planes is restricted so that the base case 
+involves a unique plane passing by three given points and consists in checking whether it separates 
+$S^-$ from $S^+$ or not (lines 11-17 of algorithm \ref{algo:rec}).  
+
+
+\begin{algorithm}[Hhtbp]
+  \KwIn{$Z \subset \mathbb{Z}^3$, the digital set \\
+  $p_1, p_2, p_3 \in \mathbb{Z}^2$, three points characterizing a plane }
+  \KwResult{``true'' if $Z$ is a digital plane, ``false'' otherwise}
+  \KwOut{$p_1, p_2, p_3$, three points caracterizing a separating plane if ``true''}
+  %
+  \tcp{initialisation step}
+  Construct the set $S^- = Z$ and the set $S^+$ a copy of $Z$ translated by $(0,0,1)$ \; 
+  Construct the set of $S = S^- \cup S^+$ \; 
+  Randomly permute the points of $S$ \;
+  \tcp{points of $S$ are numbered from $1$ to $|S|$, $|S|$ is the size of the set}
+  Initialize $p_1, p_2, p_3$ with three points of $S$ \tcp*{we assume here that $|S| > 3$}
+  \tcp{recursive step}
+  \Return areSeparable($S^-$, $S^+$, $S$, $|S|$, $p_1$, $p_2$, $p_3$, $k$) \; 
+  %
+  \caption{areSeparable($Z$, $p_1$, $p_2$, $p_3$)}
+  \label{algo:main}
+\end{algorithm}
+
+\begin{algorithm}[Hhtb]
+  \KwIn{$S^-, S^+ \subset \mathbb{Z}^2$, the bottom and top point sets, $S = S^- \cup S^+$ \\
+  $n$, number of points of $S$ to process ($1 \leq n \leq |S|$) \\
+  $p_1, p_2, p_3 \in \mathbb{Z}^2$, three points characterizing a plane \\
+  $k$, number of variable points among $\{p_1,p_2,p_3\}$ ($0 \leq k \leq 3$)}
+  \KwResult{``true'' if $S^-$ and $S^+$ are separable by a plane, ``false'' otherwise}
+  \KwOut{$p_1, p_2, p_3$, three points caracterizing a separating plane if ``true''}
+  %
+  areSeparable $\leftarrow$ TRUE \; 
+  \If{$k > 0$}{
+    for $l$ from $1$ to $k$, initialize $p_l$ with a point of $S$ \;  
+    %
+    $i \leftarrow 1$ \; 
+    \While { \emph{areSeparable} and $i < n$ }{
+      %
+      \If{($s_i \in S^-$ and $s_i$ is strictly ABOVE the plane passing by $p_1, p_2, p_3$) \\ 
+        or ($s_i \in S^+$ and $s_i$ is strictly BELOW the plane passing by $p_1, p_2, p_3$) }{
+        %
+        $p_k \leftarrow s_i$ \; 
+        areSeparable $\leftarrow$ areSeparable($S^-$, $S^+$, $i$, $p_1$, $p_2$, $p_3$, $k-1$) \; 
+        %
+      }
+      $i \leftarrow i + 1$ \; 
+    }    
+  }
+  %
+  \Else{
+    $i \leftarrow 1$ \; 
+    \While { \emph{areSeparable} and $i < n$ }{
+      %
+      \If{($s_i \in S^-$ and $s_i$ is strictly ABOVE the plane passing by $p_1, p_2, p_3$) \\ 
+        or ($s_i \in S^+$ and $s_i$ is strictly BELOW the plane passing by $p_1, p_2, p_3$) }{
+        %
+        areSeparable $\leftarrow$ FALSE \; 
+        %
+      }
+      $i \leftarrow i + 1$ \; 
+    }    
+  }
+  \Return areSeparable \; 
+  %
+  \caption{areSeparable($S^-$, $S^+$, $S$, $n$, $p_1$, $p_2$, $p_3$, $k$)}
+  \label{algo:rec}
+\end{algorithm}
+
+
+%% \begin{qu}
+%% When its last parameter is $0$, what does algorithm \ref{algo:rec} ? Compare to the previous question.
+%% When its last parameter is $k \in \{1,2,3\}$, what does algorithm \ref{algo:rec} ? 
+%% \end{qu}
+
+%question implementation avec et sans randomization
+\begin{qu}
+Implement algorithms \ref{algo:main} and \ref{algo:rec}. Provide test files. 
+\end{qu}
+
+\section{Experiments}
+
+%% Let us consider now the contour $C$ of a digital set $Z$. If $Z$ is connected
+%% and does not have any hole, its contour consists of a circular sequence of 1-cells. 
+%% Each 1-cell of the contour is the common edge of a 2-cell whose center is a point of $Z$ 
+%% and a 2-cell whose center is a point of $\bar{Z}$. Let us denote by $C^-$ (resp. $C^+$)
+%% the set of digital points of $Z$ (resp. $\bar{Z}$) that are the center of a 2-cell 
+%% incident to a 1-cell of $C$.  
+  
+%% A contour $C$ is a \emph{digital plane} if and only if there exists a plane of 
+%% center $\omega \in \mathbb{R}^2$ and of radius $\rho \in \mathbb{R}$ such that:  
+%% \begin{equation}
+%%   \left\{
+%%   \begin{array}{l}
+%%     \forall z \in C^-, \: \| z - \omega \|^2 \leq \rho^2 \\
+%%     \forall z \in C^+, \: \| z - \omega \|^2 \geq \rho^2 \\
+%%   \end{array}
+%%   \right.
+%% \end{equation}
+
+%% \begin{qu}
+%% Implement a function that checks whether $C$ is a digital plane or not. 
+%% \end{qu}
+
+
+\begin{qu}
+  Perform a running time analysis of your recognition function.  
+  TODO
+  %% \begin{itemize}
+  %% \item Implement a function that constructs the contour of a disk of a given radius.  
+  %% \item Output the running time of your recognition function for disks of increasing radius. 
+  %% \item Plot the graph of the running times against the size of the contour.
+  %% \item Do you observe the expected linear-time complexity ?
+  %% \end{itemize}	 
+\end{qu}	
+
+\section{Extra works}
+
+\begin{qu}
+Modify your recognition procedure in order to have an on-line algorithm, 
+which takes input points one by one 
+ and updates the current separating plane on the fly.
+What is the time complexity of your procedure ?
+\end{qu}
+
+\begin{qu}
+Use your on-line procedure to partition a digital surface into pieces of digital planes. 
+\end{qu}
+
+
+
+\end{document}

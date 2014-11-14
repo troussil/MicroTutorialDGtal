@@ -74,7 +74,7 @@ the converse is not true.
 %question separation et determinant
 \begin{qu}
 There exists a unique circle passing by three digital points. Show that we can test whether another digital
-point lies inside, on or outside such a circle with integer-only computations and without explicitely computing 
+point lies INSIDE, ON or OUTSIDE such a circle with integer-only computations and without explicitly computing 
 its center and radius. You may have a look at ``in-circle test'', broadly used in computational geometry, e.g. 
 to compute the Delaunay triangulation of a point set.  
 \end{qu}
@@ -85,27 +85,29 @@ digital points or not.
 \end{qu}
 
 Let us now consider algorithm \ref{algo:main} (which uses routine \ref{algo:rec}). 
-It is a randomized and recursive algorithm that checks whether two point sets, 
-denoted by $S^-$ and $S^+$, are separable by a circle in expected linear-time.  
-This algorithm is based on the following idea:
-for each point $s_i \in S^- \cup S^+$, if it belongs to $S^-$ (resp. $S^+$), 
-but is located ouside (resp. inside) the current separating circle, then either it is on another
-separating circle or the two input sets are not circularly separable at all.   
-In the aim of deciding between these two alternatives, the set of possibly separating 
-circles is restricted to circles passing by $s_i$ and the same algorithm is recursively called. 
-A each call, the set of possibly separating circles is restricted so that the base case involves 
-a unique circle passing by three given points and consists in checking whether it separates 
-$S^-$ and $S^+$ or not.  
+It is a randomized and recursive algorithm that checks whether two point sets
+ are separable by a circle in expected linear-time. 
+%refs
 
-\begin{qu}
-When its last parameter is $0$, what does algorithm \ref{algo:rec} ? Compare to the previous question.
-When its last parameter is $k \in \{1,2,3\}$, what does algorithm \ref{algo:rec} ? 
-\end{qu}
-
-%question implementation avec et sans randomization
-\begin{qu}
-Implement algorithms \ref{algo:main} and \ref{algo:rec}. 
-\end{qu}
+The union of the inner point set, denoted by $S^-$, and the outer point set, denoted by $S^+$, is 
+merely denoted by $S$. All the points of $S$ are numbered from $1$ to $|S|$, the size of $S$.    
+The idea consists in maintaining a separating circle while iterating over the points $s_i \in S$ from $1$ to $|S|$. 
+For each point $s_i$, three cases may occur:  
+\begin{itemize}
+ \item if it belongs to $S^-$ (resp. $S^+$) and it is located INSIDE (resp. OUTSIDE) or ON 
+the current separating circle, there is nothing to do. 
+ \item Otherwise (lines 6-9 of algorithm \ref{algo:rec}): 
+ \begin{enumerate}
+   \item Either the two input sets are not circularly separable at all,  
+   \item or there exists a separating circle passing by $s_i$. 
+ \end{enumerate}
+\end{itemize}
+In the aim of deciding between these last two alternatives, the set of possible separating 
+circles is restricted to circles passing by $s_i$ and the same algorithm is recursively called
+from $1$ to $i$ (line 9 of algorithm \ref{algo:rec}). 
+At each recursive call, the set of possible separating circles is restricted so that the base case 
+involves a unique circle passing by three given points and consists in checking whether it separates 
+$S^-$ from $S^+$ or not (lines 11-17 of algorithm \ref{algo:rec}).  
 
 
 %% \begin{algorithm}[Hhtbp]
@@ -174,78 +176,108 @@ Implement algorithms \ref{algo:main} and \ref{algo:rec}.
   \tcp{initialisation step}
   Construct the set of $S = S^- \cup S^+$ \; 
   Randomly permute the points of $S$ \;
-  \tcp{points of $S$ are numbered from $0$ to $|S|-1$, $|S|$ is the size of the set}
+  \tcp{points of $S$ are numbered from $1$ to $|S|$, $|S|$ is the size of the set}
   Initialize $p_1, p_2, p_3$ with three points of $S$ \tcp*{we assume here that $|S| > 3$}
   \tcp{recursive step}
-  \Return areCircularlySeparable($S^-$, $S^+$, $S$, $p_1$, $p_2$, $p_3$, $3$) \; 
+  \Return areCircularlySeparable($S^-$, $S^+$, $S$, $|S|$, $p_1$, $p_2$, $p_3$, $k$) \; 
   %
   \caption{areCircularlySeparable($S^-$, $S^+$, $p_1$, $p_2$, $p_3$)}
   \label{algo:main}
 \end{algorithm}
 
-\begin{algorithm}[Hhtbp]
+\begin{algorithm}[Hhtb]
   \KwIn{$S^-, S^+ \subset \mathbb{Z}^2$, the inner and outer point sets, $S = S^- \cup S^+$ \\
+  $n$, number of points of $S$ to process ($1 \leq n \leq |S|$) \\
   $p_1, p_2, p_3 \in \mathbb{Z}^2$, three points characterizing a circle \\
-  $n$, degree of freedom: only the first $p_k$ for $k$ from $1$ to $n$ are variable}
+  $k$, number of variable points among $\{p_1,p_2,p_3\}$ ($0 \leq k \leq 3$)}
   \KwResult{``true'' if $S^-$ and $S^+$ are circularly separable, ``false'' otherwise}
   \KwOut{$p_1, p_2, p_3$, three points caracterizing a separating circle if ``true''}
   %
-  \If{$n \geq 0$}{
-    Initialize $p_k$ for $k$ from $1$ to $n$ with $n$ points of $S$ \;  
+  areSeparable $\leftarrow$ TRUE \; 
+  \If{$k > 0$}{
+    for $l$ from $1$ to $k$, initialize $p_l$ with a point of $S$ \;  
     %
-    %\tcp{main loop}
-    $i \leftarrow 0$ \; 
-    areSeparable $\leftarrow$ TRUE \; 
-    \While { \emph{areSeparable} and $i < |S|$ }{
+    $i \leftarrow 1$ \; 
+    \While { \emph{areSeparable} and $i < n$ }{
       %
-      \If{($s_i \in S^-$ and $s_i$ is outside the circle passing by $p_1, p_2, p_3$) \\ 
-        or ($s_i \in S^+$ and $s_i$ is inside the circle passing by $p_1, p_2, p_3$) }{
+      \If{($s_i \in S^-$ and $s_i$ is strictly OUTSIDE the circle passing by $p_1, p_2, p_3$) \\ 
+        or ($s_i \in S^+$ and $s_i$ is strictly INSIDE the circle passing by $p_1, p_2, p_3$) }{
         %
-        $p_n \leftarrow s_i$ \; 
-        areSeparable $\leftarrow$ areCircularlySeparable($S^-$, $S^+$, $S$, $p_1$, $p_2$, $p_3$, $n-1$) \; 
+        $p_k \leftarrow s_i$ \; 
+        areSeparable $\leftarrow$ areCircularlySeparable($S^-$, $S^+$, $i$, $p_1$, $p_2$, $p_3$, $k-1$) \; 
         %
       }
       $i \leftarrow i + 1$ \; 
     }    
-    \Return areSeparable \; 
   }
   %
   \Else{
-    \Return FALSE \; 
+    $i \leftarrow 1$ \; 
+    \While { \emph{areSeparable} and $i < n$ }{
+      %
+      \If{($s_i \in S^-$ and $s_i$ is strictly OUTSIDE the circle passing by $p_1, p_2, p_3$) \\ 
+        or ($s_i \in S^+$ and $s_i$ is strictly INSIDE the circle passing by $p_1, p_2, p_3$) }{
+        %
+        areSeparable $\leftarrow$ FALSE \; 
+        %
+      }
+      $i \leftarrow i + 1$ \; 
+    }    
   }
+  \Return areSeparable \; 
   %
-  \caption{areCircularlySeparable($S^-$, $S^+$, $S$, $p_1$, $p_2$, $p_3$, $n$)}
+  \caption{areCircularlySeparable($S^-$, $S^+$, $S$, $n$, $p_1$, $p_2$, $p_3$, $k$)}
   \label{algo:rec}
 \end{algorithm}
 
-\section{Digital circle}
 
-Let us consider now the contour $C$ of a digital set $Z$. If $Z$ is connected
-and does not have any hole, its contour consists of a circular sequence of 1-cells. 
-Each 1-cell of the contour is the common edge of a 2-cell whose center is a point of $Z$ 
-and a 2-cell whose center is a point of $\bar{Z}$. Let us denote by $C^-$ (resp. $C^+$)
-the set of digital points of $Z$ (resp. $\bar{Z}$) that are the center of a 2-cell 
-incident to a 1-cell of $C$.  
+%% \begin{qu}
+%% When its last parameter is $0$, what does algorithm \ref{algo:rec} ? Compare to the previous question.
+%% When its last parameter is $k \in \{1,2,3\}$, what does algorithm \ref{algo:rec} ? 
+%% \end{qu}
+
+%question implementation avec et sans randomization
+\begin{qu}
+Implement algorithms \ref{algo:main} and \ref{algo:rec}. Provide test files. 
+\end{qu}
+
+\section{Experiments}
+
+%% Let us consider now the contour $C$ of a digital set $Z$. If $Z$ is connected
+%% and does not have any hole, its contour consists of a circular sequence of 1-cells. 
+%% Each 1-cell of the contour is the common edge of a 2-cell whose center is a point of $Z$ 
+%% and a 2-cell whose center is a point of $\bar{Z}$. Let us denote by $C^-$ (resp. $C^+$)
+%% the set of digital points of $Z$ (resp. $\bar{Z}$) that are the center of a 2-cell 
+%% incident to a 1-cell of $C$.  
   
-A contour $C$ is a \emph{digital circle} if and only if there exists a circle of 
-center $\omega \in \mathbb{R}^2$ and of radius $\rho \in \mathbb{R}$ such that:  
-\begin{equation}
-  \left\{
-  \begin{array}{l}
-    \forall z \in C^-, \: \| z - \omega \|^2 \leq \rho^2 \\
-    \forall z \in C^+, \: \| z - \omega \|^2 \geq \rho^2 \\
-  \end{array}
-  \right.
-\end{equation}
+%% A contour $C$ is a \emph{digital circle} if and only if there exists a circle of 
+%% center $\omega \in \mathbb{R}^2$ and of radius $\rho \in \mathbb{R}$ such that:  
+%% \begin{equation}
+%%   \left\{
+%%   \begin{array}{l}
+%%     \forall z \in C^-, \: \| z - \omega \|^2 \leq \rho^2 \\
+%%     \forall z \in C^+, \: \| z - \omega \|^2 \geq \rho^2 \\
+%%   \end{array}
+%%   \right.
+%% \end{equation}
+
+%% \begin{qu}
+%% Implement a function that checks whether $C$ is a digital circle or not. 
+%% \end{qu}
+
 
 \begin{qu}
-Implement a function that checks whether $C$ is a digital circle or not. 
+In order to check whether two connected digital sets $Z$ and $\bar{Z}$ are circularly separable, 
+it is enough to consider only the digital boundaries of $Z$ and $\bar{Z}$. Implement a function
+that takes as input the common contour of $Z$ and $\bar{Z}$ and that checks whether $Z$ and $\bar{Z}$
+are circularly separable or not. You may use \textsc{DGtal} and more precisely the class {\tt GridCurve}
+that can return the set of boundary digital points (see e.g. {\tt IncidentPointsRange}).    
 \end{qu}
 
 \begin{qu}
   Perform a running time analysis of your recognition function.  
   \begin{itemize}
-  \item Implement a function that constructs circles of a given radius.  
+  \item Implement a function that constructs the contour of a disk of a given radius.  
   \item Output the running time of your recognition function for disks of increasing radius. 
   \item Plot the graph of the running times against the size of the contour.
   \item Do you observe the expected linear-time complexity ?
@@ -256,14 +288,15 @@ Implement a function that checks whether $C$ is a digital circle or not.
 
 \begin{qu}
 Modify your recognition procedure in order to have an on-line algorithm, 
-which takes input points two by two (one belonging to $C^-$ and one belonging to $C^+$)
+which takes input points two by two (one belonging to the boundary of $Z$ and one 
+belonging to the boundary of $\bar{Z}$)
  and updates the current separating circle on the fly.
-What is the time complexity of your algorithm ?
+What is the time complexity of your procedure ?
 \end{qu}
 
 \begin{qu}
-Use this algorithm to segment a contour into digital circular arcs or to compute
-the whole set of maximal digital circular arcs.  
+Use your on-line procedure to partition a contour into digital circular arcs and
+ to compute the whole set of maximal digital circular arcs.  
 \end{qu}
 
 
