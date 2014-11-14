@@ -33,7 +33,7 @@
 
 \section*{Introduction}
 
-The objective of this project is to implement an linear programming based algorithm
+The objective of this project is to implement a linear programming based algorithm
 for the recognition of digital circles. 
 
 We expect from you:
@@ -84,14 +84,16 @@ Implement a function that checks whether two given digital sets are separated by
 digital points or not.  
 \end{qu}
 
+\section{Linear programming}
+
 Let us now consider algorithm \ref{algo:main} (which uses routine \ref{algo:rec}). 
 It is a randomized and recursive algorithm that checks whether two point sets
- are separable by a circle in expected linear-time. 
-%refs
+ are separable by a circle in expected linear-time (see \cite{Seidel1991} or \cite{Berg2000}[chapter4]). 
 
 The union of the inner point set, denoted by $S^-$, and the outer point set, denoted by $S^+$, is 
 merely denoted by $S$. All the points of $S$ are numbered from $1$ to $|S|$, the size of $S$.    
-The idea consists in maintaining a separating circle while iterating over the points $s_i \in S$ from $1$ to $|S|$. 
+The idea consists in maintaining a separating circle while iterating over the points $s_i \in S$ 
+for $i$ from $1$ to $|S|$. 
 For each point $s_i$, three cases may occur:  
 \begin{itemize}
  \item if it belongs to $S^-$ (resp. $S^+$) and it is located INSIDE (resp. OUTSIDE) or ON 
@@ -179,7 +181,7 @@ $S^-$ from $S^+$ or not (lines 11-17 of algorithm \ref{algo:rec}).
   \tcp{points of $S$ are numbered from $1$ to $|S|$, $|S|$ is the size of the set}
   Initialize $p_1, p_2, p_3$ with three points of $S$ \tcp*{we assume here that $|S| > 3$}
   \tcp{recursive step}
-  \Return areCircularlySeparable($S^-$, $S^+$, $S$, $|S|$, $p_1$, $p_2$, $p_3$, $k$) \; 
+  \Return areCircularlySeparable($S^-$, $S^+$, $S$, $|S|$, $p_1$, $p_2$, $p_3$, $3$) \; 
   %
   \caption{areCircularlySeparable($S^-$, $S^+$, $p_1$, $p_2$, $p_3$)}
   \label{algo:main}
@@ -299,6 +301,9 @@ Use your on-line procedure to partition a contour into digital circular arcs and
  to compute the whole set of maximal digital circular arcs.  
 \end{qu}
 
+\nocite{Seidel1991,Berg2000}
+\bibliographystyle{alpha}
+\bibliography{refs}
 
 
 \end{document}
