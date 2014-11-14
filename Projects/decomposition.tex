@@ -1,0 +1,144 @@
+\documentclass[a4paper, 11pt]{article}
+
+\voffset -0cm
+\hoffset 0.0cm
+\textheight 23cm
+\textwidth 16cm
+\topmargin 0.0cm
+\oddsidemargin 0.0cm
+\evensidemargin 0.0cm
+
+\usepackage{epsfig}  
+\usepackage{setspace}
+\usepackage{fancyheadings}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{url}
+
+\title{}
+\author{}
+\date{}
+
+\newtheorem{qu}{Question}
+
+\begin{document}
+
+\begin{center}
+	\LARGE \textbf{Project: ``Volumetric analysis''}
+\end{center}
+
+\section*{Introduction} 
+
+The objective of this project is to implement and evaluate some
+volumetric analysis tools of digital objects. 
+
+We expect from you:
+\begin{itemize}
+\item A short report with answers to the "formal" questions and a
+  description of  your implementation choices and results.
+\item A C++ project (\texttt{CMakeLists.txt} plus several
+  \textbf{commented} cpp program files).
+\end{itemize}
+
+
+\section{Step 1: Distance Transformation}
+
+Let us consider a 2D binary object $X$ (for instance, a parametric or implicit
+shape from \textsc{DGtal} digitized at a given resolution $h$). 
+
+\begin{qu}
+  Using \texttt{DistanceTransformation} and \texttt{VoronoiMap}
+  classes available in the library, implement tool that compute both
+  distance transformation and Voronoi map of $X$.
+\end{qu}
+
+\section{Step 2: Discrete $\lambda$-medial Axis}
+
+In computational geometry, the $\lambda$-medial axis is an
+approximation of the medial axis of a continuous shape with both
+geometric and topological guarantees \cite{Chazal2005}. Its definition
+can be described as follows: given a point $x$ in the plane, let $\delta$
+be the closest distance between $x$ and $\partial X$ (the boundary of
+$X$). Let $S_x=\{s_i\}$ be the set of points in $\partial X$ such that
+\begin{equation}
+  d(x,s_i)=\delta
+\end{equation}
+If $S$ contains more than one point, $x$ belongs to the continuous
+medial axis of $X$.  Now, a point $x$ belongs to the $\lambda-$medial
+axis of $X$ if and only if the radius of the \emph{minimum enclosing
+  circle} of $S_x$ is greater than $\lambda$.
+
+In digital geometry, we will use the following approximation
+\begin{enumerate}
+\item At a point $p\in X$, we collect closest background points $S_p$
+  from the VoronoiMap in a 3x3 window around $p$. Points in this set
+  may not be exactly equidistant to $p$, this is where the approximation comes
+  from.
+\item We compute the minimum enclosing circle of $S_p$ and $p$ belongs
+  to   the discrete $\lambda-$medial axis if the radius is greater
+  than a given paramter $\lambda$
+\end{enumerate}
+
+
+\begin{qu}
+  Implement a function that computes the minimum enclosing circle of a
+  point set (see Appendix).
+\end{qu}
+
+
+
+\begin{qu}
+  Implement a function that computes the $\lambda-$medial axis of
+  $X$. Evaluate the quality of the medial representation according to
+  paramter $\lambda$ and gridstep $h$.
+\end{qu}
+
+\section{Step 3: Thickness function}
+
+Thickness function is an important tool for the analysis of porous
+material. The function can be defined as follows for $p\in X$:
+\begin{equation}
+  \tau(p) = \max \{ r~|~ \forall B(c,r)\subset X, p\in
+  B(c,r)\}
+\end{equation}
+In other words, the thickness at $p$ is the radius of the largest
+circle containing $p$ inside the shape $X$\footnote{$B(c,r)$ is the Euclidean ball with center $c$ and
+    radius $r$.}. Instead of checking all
+balls contained in $X$, it is sufficient to only consider balls from
+the medial axis of $X$.
+
+\begin{qu}
+  Implement a function that computes the thickness function of a shape
+  $X$. First start by a $\lambda-$medial axis approximation and  use
+  the obtained medial balls to compute the thickness for all points
+  $p\in X$.
+\end{qu}
+
+
+\begin{qu}
+  Export the thickness function as a graph with the abscissa is the
+  thickness value and the ordinate, the number of pixels with
+  thickness less than $x$. How can this spectra characterize the
+  geometry of the shape. Can you guess what this has been used on
+  porous material analysis ?
+\end{qu}
+
+
+
+
+
+\appendix
+\section{Minimum Enclosing Circle}
+
+The following section describes a randomized algorithm for the minimum
+enclosing circle problem whose expected time is linear. 
+
+
+
+
+\bibliographystyle{alpha}
+\bibliography{refs}
+
+
+\end{document}
