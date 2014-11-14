@@ -74,17 +74,17 @@ Show that \ref{eq:arith-def}) is equivalent to:
 
 %question separation et determinant
 \begin{qu}
-There exists a unique (Euclidean) plane passing by three digital points. Show that we can test whether another digital
+There exists a unique (Euclidean) plane passing through three digital points. Show that we can test whether another digital
 point lies BELOW, ON or ABOVE such a plan with integer-only computations and without explicitly computing 
 its center and radius. You may have a look at ``orientation test'' or ``which-side test'', broadly used in computational geometry. 
 \end{qu}
 
 \begin{qu}
-Implement a function that checks whether two given digital sets are separated by a given plane passing by three
+Implement a function that checks whether two given digital sets are separated by a given plane passing through three
 digital points or not.  
 \end{qu}
 
-Let us now consider algorithm \ref{algo:main} (which uses routine \ref{algo:rec}). 
+Let us now consider Algorithm \ref{algo:main} (which uses Algorithm \ref{algo:rec}). 
 It is a randomized and recursive algorithm that checks whether two point sets
  are separable by a plane in expected linear-time. 
 %refs
@@ -114,7 +114,7 @@ $S^-$ from $S^+$ or not (lines 11-17 of algorithm \ref{algo:rec}).
   \KwIn{$Z \subset \mathbb{Z}^3$, the digital set \\
   $p_1, p_2, p_3 \in \mathbb{Z}^2$, three points characterizing a plane }
   \KwResult{``true'' if $Z$ is a digital plane, ``false'' otherwise}
-  \KwOut{$p_1, p_2, p_3$, three points caracterizing a separating plane if ``true''}
+  \KwOut{$p_1, p_2, p_3$, three points characterizing a separating plane if ``true''}
   %
   \tcp{initialisation step}
   Construct the set $S^- = Z$ and the set $S^+$ a copy of $Z$ translated by $(0,0,1)$ \; 
@@ -135,7 +135,7 @@ $S^-$ from $S^+$ or not (lines 11-17 of algorithm \ref{algo:rec}).
   $p_1, p_2, p_3 \in \mathbb{Z}^2$, three points characterizing a plane \\
   $k$, number of variable points among $\{p_1,p_2,p_3\}$ ($0 \leq k \leq 3$)}
   \KwResult{``true'' if $S^-$ and $S^+$ are separable by a plane, ``false'' otherwise}
-  \KwOut{$p_1, p_2, p_3$, three points caracterizing a separating plane if ``true''}
+  \KwOut{$p_1, p_2, p_3$, three points characterizing a separating plane if ``true''}
   %
   areSeparable $\leftarrow$ TRUE \; 
   \If{$k > 0$}{
@@ -173,7 +173,6 @@ $S^-$ from $S^+$ or not (lines 11-17 of algorithm \ref{algo:rec}).
   \caption{areSeparable($S^-$, $S^+$, $S$, $n$, $p_1$, $p_2$, $p_3$, $k$)}
   \label{algo:rec}
 \end{algorithm}
-
 
 %% \begin{qu}
 %% When its last parameter is $0$, what does algorithm \ref{algo:rec} ? Compare to the previous question.
