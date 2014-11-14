@@ -15,6 +15,7 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{url}
+\usepackage[english, linesnumbered, ruled, vlined]{algorithm2e}
 
 \title{}
 \author{}
@@ -132,7 +133,35 @@ the medial axis of $X$.
 \section{Minimum Enclosing Circle}
 
 The following section describes a randomized algorithm for the minimum
-enclosing circle problem whose expected time is linear. 
+enclosing circle problem whose expected time is linear
+\cite{Welzl1991}.  Given a set of points $P$, the following recursive
+algorithm computes the minimum enclosing circle $B$ containing all
+points $P$ and the set $R$ of points on $B$. The code is given for
+points in $\mathbb{R}^d$ and must be calls with $R=\emptyset$.
+
+
+\begin{algorithm}[Hhtbp]
+  \KwIn{$P\subset\mathbb{R}^d$, $R\subset\mathbb{R}^d$}
+  \KwResult{the minimum enclosing circle $B$}
+  %
+  \If{$P=\emptyset$ or $|R|=d+1$}
+      {compute $B$ which is uniquely
+        defined by  points in $R$\;
+        \Return $B$\;
+      }
+      \Else{
+        Choose $p\in P$ at random\;
+        $B$ = minimumEnclosingCircle( $P\setminus \{p\}$, $R$)\;
+        \If{$p\not\in B$}
+           {
+             $B$ = minimumEnclosingCircle( $P\setminus\{p\}$,$R\cup \{p\}$)\;
+           }
+           }
+  \Return $B$
+  
+  \caption{minimumEnclosingCircle($P$,$R$)}
+  \label{algo:main}
+\end{algorithm}
 
 
 
